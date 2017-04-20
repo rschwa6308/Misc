@@ -1,0 +1,6 @@
+Required Modules:
+
+numPy
+PIL
+Math
+os
