@@ -25,11 +25,12 @@ def main():
                 for expression in get_all_configs(A, B, C):
                     count += 1
                     value = expression.evaluate()
-                    print(expression.to_string(), " = ", value)
+                    print(expression.to_string(), " = ", str(value)[:100])
                     if value is not None and value == int(value) and value >= 0 and value not in solved:
                         solved.append(int(value))
 
-    print(sorted(solved))
+    print("\n\n\n")
+    pprint([str(n) if len(str(n)) < 100 else str(n)[:100] + "..." for n in sorted(solved)])
     # print(len(solved), " / ", count)
 
     print("Missing from first 30: ", [n for n in range(30) if n not in solved])

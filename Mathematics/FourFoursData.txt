@@ -1,0 +1,7 @@
+Atom	First Missing
+
+1	5
+2	7
+3	11
+4	10
+5	8

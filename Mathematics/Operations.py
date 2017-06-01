@@ -54,9 +54,12 @@ class Division(Operation):
 
 class Exponentiation(Operation):
     def evaluate(self):
-        if self.args[1].evaluate() > 100000000:
+        if self.args[1].evaluate() > 10000:
             return -66606660666
-        return self.args[0].evaluate() ** self.args[1].evaluate()
+        try:
+            return self.args[0].evaluate() ** self.args[1].evaluate()
+        except:
+            return -66606660666
 
     def to_string(self):
         return "({0} ^ {1})".format(self.args[0].to_string(), self.args[1].to_string())
