@@ -21,18 +21,22 @@ class Generator:
 
         tk.Label(self.root, text="Base: ").grid(row=1, column=0, sticky=tk.W)
         self.base_entry = tk.Entry(self.root, width=5)
+        self.base_entry.insert(string="1", index=0)
         self.base_entry.grid(row=1, column=1, sticky=tk.W)
 
         tk.Label(self.root, text="Blanks: ").grid(row=1, column=2, sticky=tk.W)
         self.surrounding_entry = tk.Entry(self.root, width=5)
+        self.surrounding_entry.insert(string="0", index=0)
         self.surrounding_entry.grid(row=1, column=3, sticky=tk.W)
 
         tk.Label(self.root, text="Rows: ").grid(row=2, column=0, sticky=tk.W)
         self.row_entry = tk.Entry(self.root, width=5)
+        self.row_entry.insert(string="10", index=0)
         self.row_entry.grid(row=2, column=1, columnspan=3, sticky=tk.W)
 
         tk.Label(self.root, text="Lens: ").grid(row=3, column=0, sticky=tk.W)
         self.lens_entry = tk.Entry(self.root)
+        self.lens_entry.insert(string="str(n)", index=0)
         self.lens_entry.grid(row=3, column=1, columnspan=3, sticky=tk.W)
 
         tk.Button(self.root, text="Submit", command=self.submit).grid(row=4, column=0, columnspan=4)
