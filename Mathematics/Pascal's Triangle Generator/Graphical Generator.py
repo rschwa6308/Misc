@@ -60,7 +60,7 @@ class Generator:
         lens = lambda n: eval(self.lens_entry.get())
         base, surrounding = int(self.base_entry.get()), int(self.surrounding_entry.get())
 
-        tri = get_triangle(rule, rows, base=1, surrounding=0)
+        tri = get_triangle(rule, rows, base, surrounding)
         # print_triangle(tri, lens)
         tri_string = get_printable_triangle(tri, lens)
         self.triangle_label.configure(text=tri_string)
