@@ -36,7 +36,7 @@ def find_words(board, position, visited, test_word='', candidates=english_words)
 
     candidates = get_words_startwith(candidates, test_word)
 
-    if len(candidates) <= 1:
+    if len(candidates) == 0:
         return words
 
     unused_neighbors = [pos for pos in get_neighbors(position) if pos not in visited]
