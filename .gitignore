@@ -1,0 +1,8 @@
+# Python binaries
+*.pyc
+
+# Pycharm documentation
+*.idea
+
+# Python 3 Cache
+__pycache__/
