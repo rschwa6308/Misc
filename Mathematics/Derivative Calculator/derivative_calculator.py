@@ -1,33 +1,38 @@
 from sympy import simplify
 
 
-
 # parent class for all functions (unary and binary)
 class Function:
     inputs = 0
+
     def to_string(self, parens):        # is overridden
         return ""
+
     def __repr__(self):
         parens = True
         return self.to_string(parens) if self.inputs == 1 else self.to_string(parens)[1:-1]
+
     def simplified(self):
         return self
+
     def cheat_simplified(self):
         return simplify(self.to_string(True))
+
     def equals(self, other):
         return self.to_string(True) == other.to_string(True)
-
-
 
 
 # represents functional constants
 class Constant(Function):
     inputs = 1
+
     def __init__(self, n):
         self.n = n
+
     def get_derivative(self):
         return Constant(0)
-    def to_string(self, parens = False):
+
+    def to_string(self, parens=False):
         string = str(self.n)
         return string
         # return "(" + string + ")" if parens else string
@@ -36,11 +41,14 @@ class Constant(Function):
 # represents variable being differentiated with respect to
 class Var(Function):
     inputs = 1
+
     def __init__(self, name):
         self.name = name
+
     def get_derivative(self):
         return Constant(1)
-    def to_string(self, parens = False):
+
+    def to_string(self, parens=False):
         string = self.name
         return string
         # return "(" + string + ")" if parens else string
@@ -49,11 +57,14 @@ class Var(Function):
 # represents the natural logarithm of the 1 given input
 class Natural_log(Function):
     inputs = 1
+
     def __init__(self, n):
         self.n = n
+
     def get_derivative(self):
         return Multiplication(Power(self.n, Constant(-1)), self.n.get_derivative())
-    def to_string(self, parens = False):
+
+    def to_string(self, parens=False):
         string = "ln(" + self.n.to_string(parens) + ")"
         return string
         # return "(" + string + ")" if parens else string
@@ -62,10 +73,13 @@ class Natural_log(Function):
 # represents the sine of the 1 given input
 class Sine(Function):
     inputs = 1
+
     def __init__(self, n):
         self.n = n
+
     def get_derivative(self):
         return Multiplication(Cosine(self.n), self.n.get_derivative())
+
     def to_string(self, parens):
         string = "sin(" + self.n.to_string(parens) + ")"
         return string
@@ -75,10 +89,13 @@ class Sine(Function):
 # represents the cosine of the 1 given input
 class Cosine(Function):
     inputs = 1
+
     def __init__(self, n):
         self.n = n
+
     def get_derivative(self):
         return Multiplication(Multiplication(Sine(self.n), Constant(-1)), self.n.get_derivative)
+
     def to_string(self, parens):
         string = "cos(" + self.n.to_string(parens) + ")"
         return string
@@ -88,13 +105,17 @@ class Cosine(Function):
 # represents the cosine of the 1 given input
 class Arcsin(Function):
     inputs = 1
+
     def __init__(self, n):
         self.n = n
+
     def get_derivative(self):
         return Multiplication(
-            Power(Addition(Constant(1), Multiplication(Constant(-1), self.n)), Constant(-0.5)),
+            Power(Addition(Constant(1), Multiplication(
+                Constant(-1), self.n)), Constant(-0.5)),
             self.n.get_derivative()
         )
+
     def to_string(self, parens):
         string = "arcsin(" + self.n.to_string(parens) + ")"
         return string
@@ -104,15 +125,19 @@ class Arcsin(Function):
 # represents the addition of the 2 given inputs
 class Addition(Function):
     inputs = 2
+
     def __init__(self, a, b):
         self.a = a
         self.b = b
+
     def get_derivative(self):
-        return Addition(self.a.get_derivative(), self.b.get_derivative())           # linearity of differentiation operator
+        # linearity of differentiation operator
+        return Addition(self.a.get_derivative(), self.b.get_derivative())
+
     def simplified(self):
         a = self.a.simplified()
         b = self.b.simplified()
-        #print a, b, "\n"
+        # print a, b, "\n"
         if isinstance(a, Constant) and isinstance(b, Constant):
             return Constant(a.n + b.n)
         elif isinstance(a, Constant):
@@ -131,7 +156,8 @@ class Addition(Function):
             elif a.b.equals(b.b):
                 return Multiplication(a.b, Addition(a.a, b.a))
         return Addition(a, b)
-    def to_string(self, parens = False):
+
+    def to_string(self, parens=False):
         string = self.a.to_string(parens) + " + " + self.b.to_string(parens)
         return "(" + string + ")" if parens else string
 
@@ -139,15 +165,19 @@ class Addition(Function):
 # represents the multplication of the 2 given inputs
 class Multiplication(Function):
     inputs = 2
+
     def __init__(self, a, b):
         self.a = a
         self.b = b
+
     def get_derivative(self):
-        return Addition(Multiplication(self.a, self.b.get_derivative()), Multiplication(self.a.get_derivative(), self.b))          # product rule
+        # product rule
+        return Addition(Multiplication(self.a, self.b.get_derivative()), Multiplication(self.a.get_derivative(), self.b))
+
     def simplified(self):
         a = self.a.simplified()
         b = self.b.simplified()
-        #print a, b, "\n"
+        # print a, b, "\n"
         if isinstance(a, Constant) and isinstance(b, Constant):
             return Constant(a.n * b.n)
         elif isinstance(a, Constant):
@@ -164,7 +194,8 @@ class Multiplication(Function):
             if a.base.equals(b.base):
                 return Power(a.base, Addition(a.exp, b.exp).simplified())
         return Multiplication(a, b)
-    def to_string(self, parens = False):
+
+    def to_string(self, parens=False):
         string = self.a.to_string(parens) + " * " + self.b.to_string(parens)
         return "(" + string + ")" if parens else string
 
@@ -172,23 +203,29 @@ class Multiplication(Function):
 # represents the exponentiation of the 2 given inputs
 class Power(Function):
     inputs = 2
+
     def __init__(self, base, exp):
         self.base = base
         self.exp = exp
+
     def get_derivative(self):
         if isinstance(self.exp, Constant):
-            return Multiplication(self.exp, Power(self.base, Constant(self.exp.n - 1)))        # monomial power rule
+            # monomial power rule
+            return Multiplication(self.exp, Power(self.base, Constant(self.exp.n - 1)))
         return Multiplication(          # generalized power rule
             Power(self.base, self.exp),
             Addition(
-                Multiplication(self.base.get_derivative(), Multiplication(self.exp, Power(self.base, Constant(-1)))),
-                Multiplication(self.exp.get_derivative(), Natural_log(self.base))
+                Multiplication(self.base.get_derivative(), Multiplication(
+                    self.exp, Power(self.base, Constant(-1)))),
+                Multiplication(self.exp.get_derivative(),
+                               Natural_log(self.base))
             )
         )
+
     def simplified(self):
         base = self.base.simplified()
         exp = self.exp.simplified()
-        #print base, exp, "\n"
+        # print base, exp, "\n"
         if isinstance(base, Constant) and isinstance(exp, Constant):
             return Constant(base.n ** exp.n)
         elif isinstance(base, Constant):
@@ -202,11 +239,11 @@ class Power(Function):
             elif exp.n == 1:
                 return base
         return Power(base, exp)
-    def to_string(self, parens = False):
-        string = self.base.to_string(parens) + " ^ " + self.exp.to_string(parens)
+
+    def to_string(self, parens=False):
+        string = self.base.to_string(
+            parens) + " ^ " + self.exp.to_string(parens)
         return "(" + string + ")" if parens else string
-
-
 
 
 # string keys for unary functiona (1 input)
@@ -218,6 +255,8 @@ biops = {"+": Addition, "*": Multiplication, "^": Power}
 
 # takes a function string and returns a function object
 # builds function object tree recursively
+
+
 def parse_func(string):
     string = string.replace(" ", "")
 
@@ -252,20 +291,8 @@ def parse_func(string):
             return unops[key](parse_func(string[len(key):]))
 
 
-
-
-
-
-
-
-
 if __name__ == "__main__":
-    x = Var("x")
-
     func_string = "ln(sin(ln(x^(arcsin(x^ln(x))))))"
     func = parse_func(func_string)
-    print func
-    der = func.get_derivative().cheat_simplified()
-    print der
-
-
+    der = func.get_derivative().simplified()
+    print(f'd\dx({func}) =\n{der}')
