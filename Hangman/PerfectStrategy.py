@@ -19,7 +19,7 @@ def match_board(board, word):
 
 # Given the answer, run the game using the optimal strategy
 # Return the number of incorrect guesses
-def run_game(answer):
+def run_game(answer, printing=True):
     answer_length = len(answer)
     remaining_words = {w for w in WORDS if len(w) == answer_length}
 
@@ -27,12 +27,12 @@ def run_game(answer):
     remaining_letters = set(LETTERS)
     incorrect_guesses = 0
 
-    print(' '.join('_' if b is None else b for b in board))
-    print(f'Remaining: {len(remaining_words)}\n')
+    if printing:
+        print(' '.join('_' if b is None else b for b in board))
+        print(f'Remaining: {len(remaining_words)}\n')
 
     while(any(b is None for b in board)):
         guess = optimal_guess(remaining_words, remaining_letters)
-        print(f'Guess: {guess}\t', end='')
         remaining_letters.remove(guess)
         occurrences = 0
         for i in range(answer_length):
@@ -40,15 +40,15 @@ def run_game(answer):
                 occurrences += 1
                 board[i] = guess
         if occurrences == 0:
-            print('✗')
             incorrect_guesses += 1
             remaining_words = {w for w in remaining_words if guess not in w}
         else:
-            print('✓')
             remaining_words = {w for w in remaining_words if match_board(board, w)}
         
-        print(' '.join('_' if b is None else b for b in board))
-        print(f'Remaining: {len(remaining_words)}\n')
+        if printing:
+            print(f'Guess: {guess}\t{"✗" if occurrences == 0 else "✓"}')
+            print(' '.join('_' if b is None else b for b in board))
+            print(f'Remaining: {len(remaining_words)}\n')
 
     return incorrect_guesses
     
