@@ -25,7 +25,7 @@ class TuringMachine:
     def run(self):
         steps = 0
         while self.state is not self.halt_state:
-            print(steps)
+            if steps % 10000 == 0: print(steps)
             # print(steps, self.state)
             # print(self.tape, '\n')
             self.step()
