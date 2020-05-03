@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from Words import *
 
 # Given the current game state (remaining words set, remaining letters set), return the optimal letter to guess

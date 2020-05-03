@@ -1,9 +1,11 @@
 # Words list from https://github.com/dwyl/english-words
 
+import os
 from string import ascii_lowercase as LETTERS
 from random import choice
 
-with open('words_alpha.txt') as f:
+filename = os.path.join(os.path.dirname(__file__), 'words_alpha.txt')
+with open(filename) as f:
     WORDS = set(f.read().split('\n'))
 
 
