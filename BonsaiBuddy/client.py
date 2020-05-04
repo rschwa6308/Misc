@@ -109,7 +109,7 @@ class Client:
                         if batch['status'] == 'scheduled':          # set batch status to in_progress (if first event)
                             batch['status'] = 'in_progress'
                         event['status'] = 'in_progress'
-                        # acquire lock before executing event to prevent interruption
+                        # execute event after acquiring lock (to prevent interruption)
                         with self.execution_lock:
                             error_message = self.execute_event(event)
                         if error_message is None:
