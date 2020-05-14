@@ -25,7 +25,10 @@ SECRET_KEY = '*tww&m^p=vx=+$nl5b-ptbfnm-ibjj8mjphr#70x-7lgc=ro9l'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '192.168.1.156'
+]
 
 
 # Application definition
@@ -119,3 +122,45 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '{asctime} - {levelname} - {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+        'django_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'BonsaiBuddyServer/logs/django.log',
+            'formatter': 'simple',
+        },
+        'tasks_file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'BonsaiBuddyServer/logs/tasks.log',
+            'formatter': 'simple',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console', 'django_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'tasks': {
+            'handlers': ['console', 'tasks_file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

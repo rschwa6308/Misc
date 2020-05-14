@@ -3,10 +3,15 @@ from django.shortcuts import get_object_or_404, render
 from django.views.decorators.csrf import csrf_exempt
 
 import json
-import datetime
+from datetime import datetime
+import logging
 
 from .models import Task, Sensor, SensorReading, Plant
 
+
+
+# Get an instance of a named logger
+logger = logging.getLogger('tasks')
 
 
 def home(request):
@@ -101,30 +106,49 @@ UPLOAD_PASSWORD = 'password'
 
 @csrf_exempt 
 def sensor_update(request):
-    print(request)
-    if request.method == 'POST':
+    if request.method != 'POST':
+        return HttpResponse()
+
+    try:
         content = json.loads(request.body)
-        print(content)
-        try:
-            if content['password'] != UPLOAD_PASSWORD:
-                return HttpResponse(status=403)
+        if content['password'] != UPLOAD_PASSWORD:
+            return HttpResponse(status=403)
 
-            new_readings = [
-                SensorReading(
-                    sensor=Sensor.objects.get(name=s['sensor_name']),
-                    value=s['value'],
-                    time=datetime.datetime.fromtimestamp(s['time'])
-                ) for s in content['sensors']
-            ]
+        new_readings = [
+            SensorReading(
+                sensor=Sensor.objects.get(name=s['sensor_name']),
+                value=s['value'],
+                time=datetime.fromtimestamp(s['time'])
+            ) for s in content['sensors']
+        ]
 
-            print('Saving new SensorReadings...')
-            for new_reading in new_readings:
-                new_reading.save()
-                print('\t', new_reading)
-            print('Done.')
-            return HttpResponse()
-        except Exception as e:
-            print(e)
-            return HttpResponse(status=500)
+        for new_reading in new_readings:
+            new_reading.save()
 
-    return HttpResponse()
+        return HttpResponse()
+    except Exception as e:
+        return HttpResponse(status=500)
+
+
+@csrf_exempt
+def notify_task_completed(request):
+    if request.method != 'POST':
+        return HttpResponse()
+
+    try:
+        content = json.loads(request.body)
+        if content['password'] != UPLOAD_PASSWORD:
+            return HttpResponse(status=403)
+        
+        print('hi!')
+
+        task = Task.objects.get(pk=content['task_id'])
+        task.last_completed_time = datetime.fromtimestamp(content['completion_time'])
+        task.save()
+        # print(f'Task updated!!! ({task})')
+        logger.info(f'Task #{task.id} (\"{task.name}\") completed at {task.last_completed_time}')
+
+        return HttpResponse()
+    except Exception as e:
+        print(e)
+        return HttpResponse(status=500)

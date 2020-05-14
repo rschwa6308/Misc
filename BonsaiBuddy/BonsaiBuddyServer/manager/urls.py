@@ -12,5 +12,6 @@ urlpatterns = [
     path('plants/', views.plant_list, name='plant_list'),
     path('plants/<int:plant_id>', views.plant_details, name='plant_details'),
     path('next_tasks/', views.next_tasks, name='next_tasks'),
-    path('sensor_update/', views.sensor_update, name='sensor_update')
+    path('sensor_update/', views.sensor_update, name='sensor_update'),
+    path('notify_task/', views.notify_task_completed, name='notify_task'),
 ]
