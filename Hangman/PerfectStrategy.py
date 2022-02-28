@@ -29,7 +29,8 @@ def run_game(answer, printing=True):
     incorrect_guesses = 0
 
     if printing:
-        print(' '.join('_' if b is None else b for b in board))
+        # print(' '.join('_' if b is None else b for b in board))
+        print_game(board, incorrect_guesses)
         print(f'Remaining: {len(remaining_words)}\n')
 
     while(any(b is None for b in board)):
@@ -48,11 +49,12 @@ def run_game(answer, printing=True):
         
         if printing:
             print(f'Guess: {guess}\t{"✗" if occurrences == 0 else "✓"}')
-            print(' '.join('_' if b is None else b for b in board))
+            print_game(board, incorrect_guesses)
+            # print(' '.join('_' if b is None else b for b in board))
             print(f'Remaining: {len(remaining_words)}\n')
 
     return incorrect_guesses
-    
+
 
 
 
